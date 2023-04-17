@@ -1,0 +1,48 @@
+<?php
+  session_start();
+  if (!isset($_SESSION['unique_id'])){
+    header("location: login.php");
+  }
+
+?>
+
+<?php
+include_once('header.php');
+?>
+
+<body>
+  <div class="wrapper">
+    <section class="chat-area">
+      <header>
+        <?php
+          include_once('assets/php/config.php');
+          $user_id = $_GET['user_id'];
+          $users = $pdo->query("SELECT * FROM users WHERE unique_id = {$user_id}");
+          $row_cnt = $users->rowCount();
+          if ($row_cnt > 0){
+            $users = $users->fetchAll(PDO::FETCH_ASSOC);
+          }
+        ?>
+        <a href="users.php"><i class="fa-solid fa-arrow-left"></i></a>
+        <img src="./assets/php/img/<?= $users['img']?>" alt="">
+        <div class="details">
+          <span><?= $users['fname'] . ' '. $users['lname']?></span>
+          <p><?= $users['status']?></p>
+        </div>
+      </header>
+      
+      <div class="chat-box">
+
+      </div>
+
+      <form action="#" class="typing-area" autocomplete="off">
+        <input type="text" name="outgoing_id" value="<?= $_SESSION['unique_id']?>" hidden>
+        <input type="text" class="incoming_id" name="incoming_id" value="<?php echo $user_id; ?>" hidden>
+        <input type="text" name="message" placeholder="Type message here…" class="input-field">
+        <button><i class="fa-brands fa-telegram"></i></button>
+      </form>
+    </section>
+  </div>
+  <script src="./assets/javascript/chat.js"></script>
+</body>
+</html>
